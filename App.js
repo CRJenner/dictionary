@@ -7,8 +7,31 @@ export default function App() {
 const image = images.sky
 
 const [newWord, setNewWord] = useState('')
+const[checkedWord, setCheckedWord] = useState('')
+const[definition, setDefinition] = useState('')
+const[example, setExample] = useState('')
+
 const searchWord= (enteredWord)=> {
   setNewWord(enteredWord)
+}
+
+getInfo = () => {
+  let url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + newWord;
+
+  return fetch(url)
+  .then((data) => {
+    return data.json()
+  })
+  .then((response) => {
+    let word = response[0].word
+    setCheckedWord(word);
+    
+    let def = response[0].meanings[0].definitions[0].definition
+    setDefinition(def)
+    let ex = response[0].meanings[0].definitions[0].example
+    setExample(ex)
+    
+  })
 }
 
   return (
@@ -37,7 +60,10 @@ const searchWord= (enteredWord)=> {
           marginBottom: 20
         }
         }>
-          <TouchableOpacity style={styles.buttons}>
+          <TouchableOpacity style={styles.buttons}
+          onPress={() => {
+            getInfo()
+          }}>
             <Text style={styles.buttonText}>Go !</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttons}>
@@ -48,7 +74,9 @@ const searchWord= (enteredWord)=> {
           </TouchableOpacity>
         </View>
         <View>
-          <Text>{newWord}</Text>
+          <Text>entered word: {checkedWord}</Text>
+          <Text> Defintion : {definition}</Text>
+          <Text> Example : {example} </Text>
         </View>
       </View>
       
